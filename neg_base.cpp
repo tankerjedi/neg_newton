@@ -115,64 +115,30 @@ return 0;
 
 };
 
-//Solver
+//Derivatives
 
-double goal_function(double wage1, double wage2, double price_index1, double price_index2)
+
+double d1new_wage_region1(double wage1, double wage2)
 {
-
-return 
-pow((price_index_region1(wage1,wage2) - price_index1),2) + 
-pow((price_index_region2(wage1,wage2) - price_index2),2) +
-pow(wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage1,2) +
-pow(wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage2,2);
-
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
 };
 
-double dwage_region1(double wage1, double wage2, double price_index1, double price_index2)
+double d2new_wage_region1(double wage1, double wage2)
 {
-
-return 
-2 * ( price_index_region1(wage1,wage2)- price_index1) * (1/(1 - sigma)) * pow( price_index_region1(wage1,wage2)  ,sigma)  * (1- sigma) * lambda * pow(wage1, -sigma) + 
-2 * ( price_index_region2(wage1,wage2)- price_index2) * (1/(1 - sigma)) * pow( price_index_region2(wage1,wage2)  ,sigma)  * (1- sigma) * lambda * pow(wage1, -sigma) * pow(T, 1 - sigma) + 
-2 * (wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage1) * ( ( 1 / sigma) *  pow(wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * mu * lambda * pow ( price_index1, sigma - 1) - 1) +
-2 * (wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage2) *  ( 1 / sigma) *  pow(wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * mu * lambda * pow ( price_index1 / T , sigma - 1) ;
-
-}; 
-
-double dwage_region2(double wage1, double wage2, double price_index1, double price_index2)
-{
-
-return 
-2 * ( price_index_region1(wage1,wage2)- price_index1) * (1/(1 - sigma)) * pow( price_index_region1(wage1,wage2)  ,sigma)  * (1- sigma) * (1 - lambda) * pow(wage2, -sigma) * pow( T, 1 - sigma) + 
-2 * ( price_index_region2(wage1,wage2)- price_index2) * (1/(1 - sigma)) * pow( price_index_region2(wage1,wage2)  ,sigma)  * (1- sigma) * (1 - lambda) * pow(wage2, -sigma) + 
-2 * (wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage1) * ( 1 / sigma) *  pow(wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * mu * (1 - lambda) * pow ( price_index2 / T, sigma - 1) +
-2 * (wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage2) * ( ( 1 / sigma) *  pow(wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * mu * (1 - lambda) * pow ( price_index2 , sigma - 1) - 1);
-
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
 };
 
-double dprice_index_region1(double wage1, double wage2, double price_index1, double price_index2)
-{
-
-return
--2 * ( price_index_region1(wage1,wage2)- price_index1) + 
-2 * (wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage1) * ( 1 / sigma) *  pow(wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * (mu * lambda * wage1 + (1 - mu) / 2 ) * (sigma - 1) * pow( price_index1 , sigma - 2) +
-2 * (wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage2) *  ( 1 / sigma) *  pow(wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * (mu * lambda * wage1 + (1 - mu) / 2 ) * (sigma - 1) * pow(T , 1 - sigma) * pow( price_index1 , sigma - 2) 
-;
-}
-;
-
-double dprice_index_region2(double wage1, double wage2, double price_index1, double price_index2)
-{
-
-return
--2 * ( price_index_region2(wage1,wage2)- price_index2) + 
-2 * (wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage1) * ( 1 / sigma) *  pow(wage_region1(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * (mu * (1 - lambda) * wage2 + (1 - mu) / 2 ) * (sigma - 1) * pow(T , 1 - sigma)  * pow( price_index2 , sigma - 2) + 
-2 * (wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2) - wage2) *  ( 1 / sigma) *  pow(wage_region2(income_region1(wage1),income_region2(wage2),price_index1,price_index2), 1 - sigma) * (mu * (1 - lambda) * wage2 + (1 - mu) / 2 ) * (sigma - 1) * pow( price_index2 , sigma - 2)
- ;
-
+double d1new_wage_region2(double wage1, double wage2)
+{ 
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2) / T, sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) , sigma -1),(1 /  sigma));
 };
 
-//Simulta nsolver
+double d2new_wage_region2(double wage1, double wage2)
+{ 
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2) / T, sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) , sigma -1),(1 /  sigma));
+};
+
+//solver
 
 double solve()
 {
@@ -195,32 +161,32 @@ fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t dg1 \t  g2 \t  dg2 
 //Kezdeti értékek
 
 
-printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
+//printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
 
-fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
+//fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
 
 //szovegesfajl << "Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t dg1 \t  g2 \t  dg2 \t jöv1 \t jöv2 \t célérték\n";
 
 for(i = 1; i <= iteration_limit; i++)
 {
 //derivált értékek
-dw1 = dwage_region1(w1,w2,cpi1,cpi2);
-dw2 = dwage_region2(w1,w2,cpi1,cpi2);
-dcpi1 = dprice_index_region1(w1,w2,cpi1,cpi2);
-dcpi2 = dprice_index_region2(w1,w2,cpi1,cpi2);
+//dw1 = dwage_region1(w1,w2,cpi1,cpi2);
+//dw2 = dwage_region2(w1,w2,cpi1,cpi2);
+//dcpi1 = dprice_index_region1(w1,w2,cpi1,cpi2);
+//dcpi2 = dprice_index_region2(w1,w2,cpi1,cpi2);
 
 //pontok kiszámítása
-w1 = w1 + steplambda1 * dw1;
-w2 = w2 + steplambda1 * dw2;
-cpi1 = cpi1 + steplambda2 * dcpi1;
-cpi2 = cpi2 + steplambda2 * dcpi2;
+//w1 = w1 + steplambda1 * dw1;
+//w2 = w2 + steplambda1 * dw2;
+//cpi1 = cpi1 + steplambda2 * dcpi1;
+//cpi2 = cpi2 + steplambda2 * dcpi2;
 
 //célfüggvény érékének kiíratása
 //printf("A célfüggvény értéke %2.50f \n",goal_function(w1,w2,cpi1,cpi2));
 
-printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
+//printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
 
-fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
+//fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
 //szovegesfajl << i << "\t" << w1 << "\t" <<  dwage_region1(w1,w2,cpi1,cpi2) << "\t" << w2 << "\t" << dwage_region2(w1,w2,cpi1,cpi2) << "\t"<< cpi1 << "\t" << dprice_index_region1(w1,w2,cpi1,cpi2) << "\t" << cpi2 << "\t" << dprice_index_region2(w1,w2,cpi1,cpi2) << "\t" << income_region1(w1) << "\t" << income_region2(w2) << "\t" << goal_function(w1,w2,cpi1,cpi2) << "\n";
 }
 

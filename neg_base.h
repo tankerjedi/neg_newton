@@ -39,9 +39,9 @@ double real_wage_region2(double wage2, double price_index2);
 
 //Simplified equation system: 2 equations and two variables 
 
-double new_wage_region1(double wage1);
+double new_wage_region1(double wage1, double wage2);
 
-double new_wage_region2(double wage2);
+double new_wage_region2(double wage1, double wage2);
 
 //Dinamics
 
@@ -51,15 +51,14 @@ double new_lamda(double average_real_wage0, double real_wage1); //The value of t
 
 //Solver
 
-double goal_function(double wage1, double wage2, double price_index1, double price_index2);
 
-double dwage_region1(double wage1, double wage2, double price_index1, double price_index2);
+double d1new_wage_region1(double wage1, double wage2);
 
-double dwage_region2(double wage1, double wage2, double price_index1, double price_index2);
+double d2new_wage_region1(double wage1, double wage2);
 
-double dprice_index_region1(double wage1, double wage2, double price_index1, double price_index2);
+double d1new_wage_region2(double wage1, double wage2);
 
-double dprice_index_region2(double wage1, double wage2, double price_index1, double price_index2);
+double d2new_wage_region2(double wage1, double wage2);
 
 double solve();
 
