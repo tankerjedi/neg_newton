@@ -47,7 +47,7 @@ return 0;
 //Equations
 
 
-//Base modell
+//Base modell - original equations
 
 double income_region1(double wage1)
 {
@@ -87,6 +87,19 @@ return wage1 * pow(price_index1, -mu);
 double real_wage_region2(double wage2, double price_index2)
 {
 return wage2 * pow(price_index2, -mu);
+};
+
+//simplified equations
+
+
+double new_wage_region1(double wage1, double wage2)
+{
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
+};
+
+double new_wage_region2(double wage1, double wage2)
+{ 
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2) / T, sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) , sigma -1),(1 /  sigma));
 };
 
 //Dinamics

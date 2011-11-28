@@ -19,7 +19,7 @@ double w2 = 0.9;
 //Equations
 
 
-//Base modell
+//Base modell - original equation system
 
 double income_region1(double wage1);
 
@@ -36,6 +36,12 @@ double wage_region2(double income1, double income2, double price_index1, double 
 double real_wage_region1(double wage1, double price_index1);
 
 double real_wage_region2(double wage2, double price_index2);
+
+//Simplified equation system: 2 equations and two variables 
+
+double new_wage_region1(double wage1);
+
+double new_wage_region2(double wage2);
 
 //Dinamics
 
