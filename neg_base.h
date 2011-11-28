@@ -57,9 +57,6 @@ double dprice_index_region2(double wage1, double wage2, double price_index1, dou
 
 double solve();
 
-double solve2();
-
-double solve3();
 
 //void solve(double lambda0, double pgamma, double mu, double sigma, double T, int iteration limit = 500);
 
