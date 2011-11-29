@@ -120,12 +120,26 @@ return 0;
 
 double d1new_wage_region1(double wage1, double wage2)
 {
-return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
+
+return (1/sigma) * pow(new_wage_region1(wage1,wage2),1/sigma -1)*
+(
+mu * lambda * pow(price_index_region1(wage1,wage2),sigma-1)-
+income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * lambda * (1-sigma) * pow(wage1, -sigma) * pow(T,1-sigma)- 
+pow(T, 2- 2*sigma)*income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * lambda * (1- sigma) * pow(wage1,-sigma) 
+);
+
 };
 
 double d2new_wage_region1(double wage1, double wage2)
 {
-return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
+
+return (1/sigma) * pow(new_wage_region1(wage1,wage2),1/sigma -1)*
+(
+-income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * (1 - lambda) * (1-sigma) * pow(wage2, -sigma) * pow(T,1-sigma)+ 
+mu * (1 - lambda) * pow(price_index_region2(wage1,wage2),sigma-1) * pow(T, 1 - sigma)-
+income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - lambda) * (1- sigma) * pow(wage2,-sigma) * pow(T, 1 - sigma) 
+);
+
 };
 
 double d1new_wage_region2(double wage1, double wage2)
