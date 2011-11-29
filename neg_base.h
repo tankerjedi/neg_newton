@@ -1,7 +1,7 @@
 
 //Parameters
 
-int iteration_limit = 100; //Itertaion limit
+int iteration_limit = 10; //Itertaion limit
 
 double lambda = 0.5; //Region's population share in region1 parameter
 double pgamma =1; //Speed of population moving 
@@ -11,10 +11,10 @@ double steplambda2 = -0.4; //derivate step 2
 double  mu = 0.5; //Cobb-Douglas utility function parameter
 double sigma = 5; //CES utility function parameter
 
-double T = 1; //Transportation cost
+double T = 1.2; //Transportation cost
 
 double w1 = 1.1; //bérváltozó kezdeti értéke
-double w2 = 0.9;
+double w2 = 1.0;
 
 //Equations
 
@@ -62,6 +62,7 @@ double d2new_wage_region2(double wage1, double wage2);
 
 double solve();
 
+//Text
 
-//void solve(double lambda0, double pgamma, double mu, double sigma, double T, int iteration limit = 500);
+void textwrite(FILE * allomany);
 

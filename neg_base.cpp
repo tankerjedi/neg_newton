@@ -13,20 +13,6 @@ int main(int argc, char * argv[])
 printf("Parameters: w1, w2, slambda (iteration parameters), T, lambda,sigma (modells parameters)\n");
 printf("Simulation starts\n");
 
-//printf("Wage in region1 is: %4.2f\n",wage_region1( income_region1(1), income_region2(1), price_index_region1(1,1), price_index_region2(1,1)));
-
-//printf("Price in region1 is by (1,1): %4.2f\n", price_index_region1(1,1));
-
-//printf("Value of goal function: %4.10f\n",goal_function(1.1,1.1,price_index_region1(1.1,1.1),price_index_region2(1.1,1.1)));
-
-//printf("Value of dL/dw1: %4.2f\n", dwage_region1(1.1,1.1,price_index_region1(1.1,1.1),price_index_region2(1.1,1.1)));
-
-//printf("Value of dL/dw2: %4.2f\n", dwage_region2(1.1,1.1,price_index_region1(1.1,1.1),price_index_region2(1.1,1.1)));
-
-//printf("Value of dL/dG1: %4.2f\n", dprice_index_region1(1.1,1.1,price_index_region1(1.1,1.1),price_index_region2(1.1,1.1)));
-
-//printf("Value of dL/dG2: %4.2f\n", dprice_index_region2(1.1,1.1,price_index_region1(1.1,1.1),price_index_region2(1.1,1.1)));
-
 
 //bemeneti érték vizsgálat és kiíratás
 //char * vege;
@@ -36,7 +22,6 @@ if (argc > 3) {steplambda1 = atof(argv[3]);}
 if (argc > 4) {T = atof(argv[4]);}
 if (argc > 5) {lambda = atof(argv[5]);}
 if (argc > 6) {sigma = atof(argv[6]);}
-//printf("__________________________Lambda paraméter: %f\n", s3lambda);
 
 
 solve();
@@ -121,7 +106,7 @@ return 0;
 double d1new_wage_region1(double wage1, double wage2)
 {
 
-return (1/sigma) * pow(new_wage_region1(wage1,wage2),1/sigma -1)*
+return (1/sigma) * pow(new_wage_region1(wage1,wage2),1 - sigma)*
 (
 mu * lambda * pow(price_index_region1(wage1,wage2),sigma-1)-
 income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * lambda * (1-sigma) * pow(wage1, -sigma) - 
@@ -133,7 +118,7 @@ pow(T, 2- 2*sigma)*income_region2(wage2) * pow(price_index_region2(wage1,wage2),
 double d2new_wage_region1(double wage1, double wage2)
 {
 
-return (1/sigma) * pow(new_wage_region1(wage1,wage2),1/sigma -1)*
+return (1/sigma) * pow(new_wage_region1(wage1,wage2),1 - sigma)*
 (
 -income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * (1 - lambda) * (1-sigma) * pow(wage2, -sigma) * pow(T,1-sigma)+ 
 mu * (1 - lambda) * pow(price_index_region2(wage1,wage2),sigma-1) * pow(T, 1 - sigma)-
@@ -145,13 +130,11 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - l
 double d1new_wage_region2(double wage1, double wage2)
 { 
 
-return (1/sigma) * pow(new_wage_region2(wage1,wage2),1/sigma -1)*
+return (1/sigma) * pow(new_wage_region2(wage1,wage2),1 - sigma)*
 (
-
 mu *  lambda * pow(price_index_region1(wage1,wage2),sigma-1) * pow(T, 1 - sigma)-
 income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) *  lambda * (1- sigma) * pow(wage1,-sigma) * pow(T, 1 - sigma)-
-
-income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) *  lambda * (1-sigma) * pow(wage2, -sigma) * pow(T,1-sigma)
+income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) *  lambda * (1-sigma) * pow(wage1, -sigma) * pow(T,1-sigma)
 );
 
 };
@@ -159,7 +142,7 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) *  lambd
 double d2new_wage_region2(double wage1, double wage2)
 { 
 
-return (1/sigma) * pow(new_wage_region2(wage1,wage2),1/sigma -1)*
+return (1/sigma) * pow(new_wage_region2(wage1,wage2),1 - sigma)*
 (
 -pow(T, 2- 2*sigma)*income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * (1 - lambda) * (1- sigma) * pow(wage2,-sigma)+
 mu * (1- lambda) * pow(price_index_region2(wage1,wage2),sigma-1)-
@@ -168,56 +151,78 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - l
 
 };
 
+void textwrite(FILE * allomany)
+{
+
+printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2),w1 + w2 - new_wage_region1(w1,w2) - new_wage_region2(w1,w2));
+
+
+fprintf(allomany,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2),w1 + w2 - new_wage_region1(w1,w2) - new_wage_region2(w1,w2));
+};
+
 //solver
 
 double solve()
 {
 //változók kezdeti értékei
 int i;
-double cpi1 = price_index_region1(w1,w2);
-double cpi2 = price_index_region2(w1,w2);
-double dw1, dw2, dcpi1, dcpi2;
+double dw1, dw2, segedw1, segedw2;
+double jacobi[2][2], determinans, jacobiinverz[2][2];
 
 //fejléc
-printf("Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t dg1 \t  g2 \t  dg2 \t jöv1 \t jöv2 \t célérték\n");
+printf("Iteráció \t w1 \t d1w1 \t d2w1 \t w2 \t d1w2 \t d2w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t fv1 különbség \t fv2 különbség \t össz. különbség \n");
 
 
 //fájl megnyitás
 
 FILE * pFile;
 pFile = fopen ( "neg.txt" , "w" );
-fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t dg1 \t  g2 \t  dg2 \t jöv1 \t jöv2 \t célérték\n");
+fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t  g2 \t jöv1 \t jöv2 \t fv1 különbség \t fv2 különbség \t össz. különbség\n");
 
-//Kezdeti értékek
+//Kezdeti értékek kiíratása a képernyőre és fájlba
 
+textwrite(pFile);
 
-//printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
-
-//fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
-
-//szovegesfajl << "Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t dg1 \t  g2 \t  dg2 \t jöv1 \t jöv2 \t célérték\n";
-
+//Iteráció
 for(i = 1; i <= iteration_limit; i++)
 {
-//derivált értékek
-//dw1 = dwage_region1(w1,w2,cpi1,cpi2);
-//dw2 = dwage_region2(w1,w2,cpi1,cpi2);
-//dcpi1 = dprice_index_region1(w1,w2,cpi1,cpi2);
-//dcpi2 = dprice_index_region2(w1,w2,cpi1,cpi2);
+//Jacobi mátrix kiszámítása
+jacobi[0][0] = d1new_wage_region1(w1,w2);
+jacobi[0][1] = d2new_wage_region1(w1,w2);
+jacobi[1][0] = d1new_wage_region2(w1,w2);
+jacobi[1][1] = d2new_wage_region2(w1,w2);
 
-//pontok kiszámítása
-//w1 = w1 + steplambda1 * dw1;
-//w2 = w2 + steplambda1 * dw2;
-//cpi1 = cpi1 + steplambda2 * dcpi1;
-//cpi2 = cpi2 + steplambda2 * dcpi2;
+
+determinans = jacobi[0][0]*jacobi[1][1]-jacobi[0][1]*jacobi[1][0];
+
+//Ha determináns nulla, akkor nem lépünk többet
+if (determinans == 0) {
+printf("Optimális megoldás------------------------------------------------------------\n");
+break;
+}
+
+//Ha nem nulla, akkor folytatjuk az iterációt
+
+jacobiinverz[0][0] = jacobi[1][1]/determinans;
+jacobiinverz[0][1] = -jacobi[0][1]/determinans;
+jacobiinverz[1][0] = -jacobi[1][0]/determinans;
+jacobiinverz[1][1] = jacobi[0][0]/determinans;
+
+
+//Új pontok keresése - Newton iteráció
+segedw1 = w1 - ( jacobiinverz[0][0] * new_wage_region1(w1,w2) + jacobiinverz[0][1] * new_wage_region2(w1,w2) );
+segedw2 = w2 - ( jacobiinverz[1][0] * new_wage_region1(w1,w2) + jacobiinverz[1][1] * new_wage_region2(w1,w2) );
+
+
+printf("EZZZZZ %f\n", jacobiinverz[1][1]);
+
+w1 = segedw1;
+w2 = segedw2;
 
 //célfüggvény érékének kiíratása
-//printf("A célfüggvény értéke %2.50f \n",goal_function(w1,w2,cpi1,cpi2));
 
-//printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
+textwrite(pFile);
 
-//fprintf(pFile,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f\n",i,w1,dwage_region1(w1,w2,cpi1,cpi2),w2,dwage_region2(w1,w2,cpi1,cpi2),cpi1,dprice_index_region1(w1,w2,cpi1,cpi2),cpi2,dprice_index_region2(w1,w2,cpi1,cpi2),income_region1(w1),income_region2(w2),goal_function(w1,w2,cpi1,cpi2));
-//szovegesfajl << i << "\t" << w1 << "\t" <<  dwage_region1(w1,w2,cpi1,cpi2) << "\t" << w2 << "\t" << dwage_region2(w1,w2,cpi1,cpi2) << "\t"<< cpi1 << "\t" << dprice_index_region1(w1,w2,cpi1,cpi2) << "\t" << cpi2 << "\t" << dprice_index_region2(w1,w2,cpi1,cpi2) << "\t" << income_region1(w1) << "\t" << income_region2(w2) << "\t" << goal_function(w1,w2,cpi1,cpi2) << "\n";
 }
 
 //Fájl bezárása
