@@ -4,17 +4,15 @@
 int iteration_limit = 10; //Itertaion limit
 
 double lambda = 0.5; //Region's population share in region1 parameter
-double pgamma =1; //Speed of population moving 
-double steplambda1 = -0.1; //derivate step 1
-double steplambda2 = -0.4; //derivate step 2
+double pgamma = 1; //Speed of population moving 
 
-double  mu = 0.5; //Cobb-Douglas utility function parameter
+double  mu = 0.4; //Cobb-Douglas utility function parameter
 double sigma = 5; //CES utility function parameter
 
-double T = 1.2; //Transportation cost
+double T = 1; //Transportation cost
 
 double w1 = 1.1; //bérváltozó kezdeti értéke
-double w2 = 1.0;
+double w2 = 1.1;
 
 //Equations
 
@@ -42,6 +40,13 @@ double real_wage_region2(double wage2, double price_index2);
 double new_wage_region1(double wage1, double wage2);
 
 double new_wage_region2(double wage1, double wage2);
+
+
+//Modifed equations to derivative
+
+double mnew_wage_region1(double wage1, double wage2);
+
+double mnew_wage_region2(double wage1, double wage2);
 
 //Dinamics
 

@@ -10,7 +10,7 @@
 
 int main(int argc, char * argv[])
 {
-printf("Parameters: w1, w2, slambda (iteration parameters), T, lambda,sigma (modells parameters)\n");
+printf("Parameters: w1, w2, slambda (iteration parameters), T, lambda,sigma (modell parameters)\n");
 printf("Simulation starts\n");
 
 
@@ -18,10 +18,9 @@ printf("Simulation starts\n");
 //char * vege;
 if (argc > 1) {w1 = atof(argv[1]);}
 if (argc > 2) {w2 = atof(argv[2]);}
-if (argc > 3) {steplambda1 = atof(argv[3]);}
-if (argc > 4) {T = atof(argv[4]);}
-if (argc > 5) {lambda = atof(argv[5]);}
-if (argc > 6) {sigma = atof(argv[6]);}
+if (argc > 3) {T = atof(argv[3]);}
+if (argc > 4) {lambda = atof(argv[4]);}
+if (argc > 5) {sigma = atof(argv[5]);}
 
 
 solve();
@@ -79,13 +78,27 @@ return wage2 * pow(price_index2, -mu);
 
 double new_wage_region1(double wage1, double wage2)
 {
-return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma));
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2), sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) / T, sigma -1),(1 /  sigma)) - wage1;
 };
 
 double new_wage_region2(double wage1, double wage2)
 { 
-return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2) / T, sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) , sigma -1),(1 /  sigma));
+return pow(income_region1(wage1) * pow(price_index_region1(wage1,wage2) / T, sigma - 1) + income_region2(wage2) * pow(price_index_region2(wage1,wage2) , sigma -1),(1 /  sigma)) - wage2;
 };
+
+//Modified form to derivations
+
+double mnew_wage_region1(double wage1, double wage2)
+{
+return new_wage_region1(wage1,wage2) + wage1;
+};
+
+double mnew_wage_region2(double wage1, double wage2)
+{ 
+return new_wage_region2(wage1,wage2) - wage2;
+};
+
+//Modified form to derivations
 
 //Dinamics
 
@@ -106,19 +119,19 @@ return 0;
 double d1new_wage_region1(double wage1, double wage2)
 {
 
-return (1/sigma) * pow(new_wage_region1(wage1,wage2),1 - sigma)*
+return (1/sigma) * pow(mnew_wage_region1(wage1,wage2),1 - sigma)*
 (
 mu * lambda * pow(price_index_region1(wage1,wage2),sigma-1)-
 income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * lambda * (1-sigma) * pow(wage1, -sigma) - 
 pow(T, 2- 2*sigma)*income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * lambda * (1- sigma) * pow(wage1,-sigma) 
-);
+) - 1 ;
 
 };
 
 double d2new_wage_region1(double wage1, double wage2)
 {
 
-return (1/sigma) * pow(new_wage_region1(wage1,wage2),1 - sigma)*
+return (1/sigma) * pow(mnew_wage_region1(wage1,wage2),1 - sigma)*
 (
 -income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * (1 - lambda) * (1-sigma) * pow(wage2, -sigma) * pow(T,1-sigma)+ 
 mu * (1 - lambda) * pow(price_index_region2(wage1,wage2),sigma-1) * pow(T, 1 - sigma)-
@@ -130,7 +143,7 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - l
 double d1new_wage_region2(double wage1, double wage2)
 { 
 
-return (1/sigma) * pow(new_wage_region2(wage1,wage2),1 - sigma)*
+return (1/sigma) * pow(mnew_wage_region2(wage1,wage2),1 - sigma)*
 (
 mu *  lambda * pow(price_index_region1(wage1,wage2),sigma-1) * pow(T, 1 - sigma)-
 income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) *  lambda * (1- sigma) * pow(wage1,-sigma) * pow(T, 1 - sigma)-
@@ -142,19 +155,19 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) *  lambd
 double d2new_wage_region2(double wage1, double wage2)
 { 
 
-return (1/sigma) * pow(new_wage_region2(wage1,wage2),1 - sigma)*
+return (1/sigma) * pow(mnew_wage_region2(wage1,wage2),1 - sigma)*
 (
 -pow(T, 2- 2*sigma)*income_region1(wage1) * pow(price_index_region1(wage1,wage2),2*sigma-2) * (1 - lambda) * (1- sigma) * pow(wage2,-sigma)+
 mu * (1- lambda) * pow(price_index_region2(wage1,wage2),sigma-1)-
 income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - lambda) * (1-sigma) * pow(wage2, -sigma) 
-);
+) - 1 ;
 
 };
 
 void textwrite(FILE * allomany)
 {
 
-printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2),w1 + w2 - new_wage_region1(w1,w2) - new_wage_region2(w1,w2));
+printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
 
 
 fprintf(allomany,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2),w1 + w2 - new_wage_region1(w1,w2) - new_wage_region2(w1,w2));
@@ -214,7 +227,7 @@ segedw1 = w1 - ( jacobiinverz[0][0] * new_wage_region1(w1,w2) + jacobiinverz[0][
 segedw2 = w2 - ( jacobiinverz[1][0] * new_wage_region1(w1,w2) + jacobiinverz[1][1] * new_wage_region2(w1,w2) );
 
 
-printf("EZZZZZ %f\n", jacobiinverz[1][1]);
+//printf("EZZZZZ %f\n", jacobiinverz[1][1]);
 
 w1 = segedw1;
 w2 = segedw2;
