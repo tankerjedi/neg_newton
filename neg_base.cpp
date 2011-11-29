@@ -10,7 +10,7 @@
 
 int main(int argc, char * argv[])
 {
-printf("Parameters: w1, w2, slambda (iteration parameters), T, lambda,sigma (modell parameters)\n");
+printf("Parameters: w1, w2, T, lambda, sigma, mu, iteration limit\n");
 printf("Simulation starts\n");
 
 
@@ -21,9 +21,11 @@ if (argc > 2) {w2 = atof(argv[2]);}
 if (argc > 3) {T = atof(argv[3]);}
 if (argc > 4) {lambda = atof(argv[4]);}
 if (argc > 5) {sigma = atof(argv[5]);}
+if (argc > 6) {mu = atof(argv[6]);}
+if (argc > 7) {iteration_limit = atoi(argv[7]);}
 
 
-solve();
+solve_equation(true);
 
 return 0;
 }
@@ -164,18 +166,20 @@ income_region2(wage2) * pow(price_index_region2(wage1,wage2),2*sigma-2) * (1 - l
 
 };
 
-void textwrite(FILE * allomany)
+void textwrite(FILE * allomany,int line, bool text )
 {
 
-printf("%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
+if (text == false ) return;
 
+printf("%3d \t %.3f \t %.3f \t %.3f \t %.3f \t %.3f \t  %.3f \t %.3f \t %.3f \t %.3f \t %.3f \t %.3f \n",line,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
 
-fprintf(allomany,"%3d \t %f \t %f \t %f \t %f \t %f \t  %f \t %f \t %f \t %f \t %f \t %f \t %f \t %f\n",0,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2),w1 - new_wage_region1(w1,w2),w2 - new_wage_region2(w1,w2),w1 + w2 - new_wage_region1(w1,w2) - new_wage_region2(w1,w2));
+fprintf(allomany,"%3d \t %e \t %e \t %e \t %e \t %e \t  %e \t %e \t %e \t %e \t %e \t %e \n",line,w1,d1new_wage_region1(w1,w2),d2new_wage_region1(w1,w2),w2,d1new_wage_region2(w1,w2),d2new_wage_region2(w1,w2),price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
+
 };
 
 //solver
 
-double solve()
+double solve_equation(bool extrainfo)
 {
 //változók kezdeti értékei
 int i;
@@ -183,18 +187,18 @@ double dw1, dw2, segedw1, segedw2;
 double jacobi[2][2], determinans, jacobiinverz[2][2];
 
 //fejléc
-printf("Iteráció \t w1 \t d1w1 \t d2w1 \t w2 \t d1w2 \t d2w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t fv1 különbség \t fv2 különbség \t össz. különbség \n");
+printf("Iteráció \t w1 \t d1w1 \t d2w1 \t w2 \t d1w2 \t d2w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t célfv. \n");
 
 
 //fájl megnyitás
 
 FILE * pFile;
 pFile = fopen ( "neg.txt" , "w" );
-fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t  g2 \t jöv1 \t jöv2 \t fv1 különbség \t fv2 különbség \t össz. különbség\n");
+fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t  g2 \t jöv1 \t jöv2 \t célfv. \n");
 
 //Kezdeti értékek kiíratása a képernyőre és fájlba
 
-textwrite(pFile);
+textwrite(pFile,0,extrainfo);
 
 //Iteráció
 for(i = 1; i <= iteration_limit; i++)
@@ -234,11 +238,22 @@ w2 = segedw2;
 
 //célfüggvény érékének kiíratása
 
-textwrite(pFile);
+textwrite(pFile,i,extrainfo);
 
 }
 
 //Fájl bezárása
 fclose (pFile);
 
+};
+
+double solve_equation_system()
+{
+int i;
+
+for(i=0;i<101;i++)
+{
+solve_equation(false);
 }
+
+};

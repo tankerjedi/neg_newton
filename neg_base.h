@@ -65,9 +65,11 @@ double d1new_wage_region2(double wage1, double wage2);
 
 double d2new_wage_region2(double wage1, double wage2);
 
-double solve();
+double solve_equation(bool extrainfo);
+
+double solve_equation_system();
 
 //Text
 
-void textwrite(FILE * allomany);
+void textwrite(FILE * allomany, int line, bool text);
 
