@@ -11,7 +11,7 @@ double sigma = 5; //CES utility function parameter
 
 double T = 1; //Transportation cost
 
-double w1 = 1.1; //bérváltozó kezdeti értéke
+double w1 = 1.1; //initial values of wages
 double w2 = 1.1;
 
 //Equations
@@ -48,11 +48,6 @@ double mnew_wage_region1(double wage1, double wage2);
 
 double mnew_wage_region2(double wage1, double wage2);
 
-//Dinamics
-
-double average_real_wage(double real_wage1, double real_wage2);
-
-double new_lamda(double average_real_wage0, double real_wage1); //The value of the population share in the next 
 
 //Solver
 

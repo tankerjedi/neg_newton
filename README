@@ -1,3 +1,5 @@
-This progam is a simulation of a new economic geography model. It is based on Fujita-Krugman-Venables 1999 book. It uses newton method to solve the equations system.
+This progam is a simulation of a new economic geography model. It reproduces Fujita-Krugman-Venables 1999 66-67p. simulations (three graphs) . It uses newton method to solve the equations system.
+
+Program flags w1, w2, T, lambda, sigma, mu, iteration limit. You can change in the code to solve only the equation system for one lambda or all lambda.
 
 Tanker Jedi

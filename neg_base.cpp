@@ -2,8 +2,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-
-
 #include "neg_base.h"
 
 
@@ -15,7 +13,6 @@ printf("Simulation starts\n");
 
 
 //bemeneti érték vizsgálat és kiíratás
-//char * vege;
 if (argc > 1) {w1 = atof(argv[1]);}
 if (argc > 2) {w2 = atof(argv[2]);}
 if (argc > 3) {T = atof(argv[3]);}
@@ -25,9 +22,9 @@ if (argc > 6) {mu = atof(argv[6]);}
 if (argc > 7) {iteration_limit = atoi(argv[7]);}
 
 
-//solve_equation(true);
+//solve_equation(true); //solve for 1 lambda
 
-solve_equation_system();
+solve_equation_system(); //solve for all lambda
 
 return 0;
 }
@@ -104,19 +101,6 @@ double mnew_wage_region2(double wage1, double wage2)
 
 //Modified form to derivations
 
-//Dinamics
-
-double average_real_wage(double real_wage1, double real_wage2)
-{
-	return 0;
-};
-
-double new_lamda(double average_real_wage0, double real_wage1) //The value of the population share in the next
-{
-	return 0;
-
-};
-
 //Derivatives
 
 
@@ -183,12 +167,12 @@ fprintf(allomany,"%3d \t %e \t %e \t %e \t %e \t %e \t  %e \t %e \t %e \t %e \t 
 
 double solve_equation(bool extrainfo)
 {
-//változók kezdeti értékei
+//variables initial values
 int i;
 double dw1, dw2, segedw1, segedw2;
 double jacobi[2][2], determinans, jacobiinverz[2][2];
 
-//fejléc
+//Header
 if (extrainfo)
 {
 
@@ -196,7 +180,7 @@ if (extrainfo)
 
 };
 
-//fájl megnyitás
+//Open file
 
 FILE * pFile;
 pFile = fopen ( "neg.txt" , "w" );
@@ -206,14 +190,14 @@ if (extrainfo)
 	fprintf(pFile,"Iteráció \t w1 \t dw1 \t w2 \t dw2 \t g1 \t  g2 \t jöv1 \t jöv2 \t célfv. \n");
 
 };
-//Kezdeti értékek kiíratása a képernyőre és fájlba
+//To write on console and file initial values
 
 textwrite(pFile,0,extrainfo);
 
-//Iteráció
+//Iteration
 for(i = 1; i <= iteration_limit; i++)
 {
-//Jacobi mátrix kiszámítása
+//Compute Jacobi matrix 
 jacobi[0][0] = d1new_wage_region1(w1,w2);
 jacobi[0][1] = d2new_wage_region1(w1,w2);
 jacobi[1][0] = d1new_wage_region2(w1,w2);
@@ -222,13 +206,13 @@ jacobi[1][1] = d2new_wage_region2(w1,w2);
 
 determinans = jacobi[0][0]*jacobi[1][1]-jacobi[0][1]*jacobi[1][0];
 
-//Ha determináns nulla, akkor nem lépünk többet
+//If determinant is 0, then STOP
 if (determinans == 0) {
-printf("Optimális megoldás------------------------------------------------------------\n");
+printf("Optimal solution------------------------------------------------------------\n");
 break;
 }
 
-//Ha nem nulla, akkor folytatjuk az iterációt
+//Otherwise continue iteratoin
 
 jacobiinverz[0][0] = jacobi[1][1]/determinans;
 jacobiinverz[0][1] = -jacobi[0][1]/determinans;
@@ -236,53 +220,52 @@ jacobiinverz[1][0] = -jacobi[1][0]/determinans;
 jacobiinverz[1][1] = jacobi[0][0]/determinans;
 
 
-//Új pontok keresése - Newton iteráció
+//Calculate new points
 segedw1 = w1 - ( jacobiinverz[0][0] * new_wage_region1(w1,w2) + jacobiinverz[0][1] * new_wage_region2(w1,w2) );
 segedw2 = w2 - ( jacobiinverz[1][0] * new_wage_region1(w1,w2) + jacobiinverz[1][1] * new_wage_region2(w1,w2) );
-
-
-//printf("EZZZZZ %f\n", jacobiinverz[1][1]);
 
 w1 = segedw1;
 w2 = segedw2;
 
-//célfüggvény érékének kiíratása
+//To write values of goal funcion
 
 textwrite(pFile,i,extrainfo);
 
 }
 
-//Fájl bezárása
+//Close file
 fclose(pFile);
 
 };
 
+
+//Solve for all lambda eq. system
 double solve_equation_system()
 {
 	int i;
 
-//fejléc
+//Header
 
 	printf("Iteráció \t w1 \t w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t célfv. \n");
 
 
-//fájl megnyitás
+//Open file
 
 
 	FILE * pFile;
 	pFile = fopen ( "neg_lambda.txt" , "w" );
-	fprintf(pFile,"Lambda \t w1 \t w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t célfv. \n");
+	fprintf(pFile,"Lambda \t w1 \t w2 \t g1 \t  g2 \t jöv1 \t jöv2 \t rw1 \t rw2 \t célfv. \n");
 
 
 	for(i=0;i<101;i++)
 	{
-		lambda = i/100;
+		lambda = i*0.01;
 		solve_equation(false);
 
-		printf("%3d \t %.3f \t %.3f \t %.3f \t %.3f \t %.3f \t  %.3f \t %.3f \n",i,w1,w2,price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
+		printf("%3f \t %.3f \t %.3f \t %.3f \t %.3f \t %.3f \t  %.3f \t %.3f \n",lambda,w1,w2,price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
 
 
-		fprintf(pFile,"%3d \t %e \t %e \t %e \t %e \t %e \t  %e \t %e \n",i ,w1,w2,price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
+		fprintf(pFile,"%3f \t %e \t %e \t %e \t %e \t %e \t  %e \t %e \t %e \t %e\n",lambda ,w1,w2,price_index_region1(w1,w2) ,price_index_region2(w1,w2), income_region1(w1),income_region2(w2), real_wage_region1(w1,price_index_region1(w1,w2)),real_wage_region2(w2,price_index_region2(w1,w2)),new_wage_region1(w1,w2) +  new_wage_region2(w1,w2));
 
 	}
 
