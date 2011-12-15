@@ -96,7 +96,7 @@ double mnew_wage_region1(double wage1, double wage2)
 
 double mnew_wage_region2(double wage1, double wage2)
 { 
-	return new_wage_region2(wage1,wage2) - wage2;
+	return new_wage_region2(wage1,wage2) + wage2;
 };
 
 //Modified form to derivations
